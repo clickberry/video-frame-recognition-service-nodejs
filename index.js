@@ -5,12 +5,41 @@ if (!process.env.VISION_API_TOKEN) {
 }
 
 var debug = require('debug')('clickberry:video-frame-recognition:worker');
+
 var Recognizer = require('./lib/recognizer');
 var recognizer = new Recognizer(process.env.VISION_API_TOKEN);
 
-var url = 'https://clickberryframesqa.s3.amazonaws.com/70e57055-7a1c-4d72-b787-bab84e8abb69/tmp-48291eKY28qzAwqt3_45.jpg';
+var Bus = require('./lib/bus');
+var bus = new Bus();
 
-recognizer.detect(url, function (err, results) {
-  if (err) return console.error(err);
-  console.log(results);
+var Frame = require('./lib/frame');
+
+function handleError(err) {
+  console.error(err);
+}
+
+bus.on('frame', function (msg) {
+  var frame = JSON.parse(msg.body);
+  debug('Video frame ready for recognition: ' + JSON.stringify(frame));
+
+  // detecting objects
+  var features = [{name: 'LABEL_DETECTION', maxResults: 10}];
+  recognizer.detect(frame.uri, {features: features}, function (err, results) {
+    if (err) return handleError(err);
+
+    // save recognition results
+    Frame.create({
+      videoId: frame.video_id,
+      frameIndex: frame.frame_idx,
+      uri: frame.uri,
+      tags: results[0].labels
+    }, function (err, f) {
+      if (err) return handleError(err);
+      debug('Video frame recognition results (' + frame.uri + '): ' + JSON.stringify(f));
+
+      msg.finish();
+    });
+  });
 });
+
+debug('Listening for messages...');
