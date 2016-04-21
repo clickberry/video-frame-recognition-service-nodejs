@@ -20,6 +20,13 @@ function handleError(err) {
 
 bus.on('frame', function (msg) {
   var frame = JSON.parse(msg.body);
+
+  if (frame.frame_idx % 25 !== 0) {
+    debug('Skipping frame: ' + JSON.stringify(frame));
+    return msg.finish();
+  }
+  
+  // we will recognize objects in 1 frame per second
   debug('Video frame ready for recognition: ' + JSON.stringify(frame));
 
   // detecting objects
