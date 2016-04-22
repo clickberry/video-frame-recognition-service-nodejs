@@ -10,7 +10,13 @@ if [ -z "$NSQLOOKUPD_ADDRESSES" ]; then
     exit 1
 fi
 
-echo "USING NSQLOOKUPD: ${NSQLOOKUPD_ADDRESSES}"
+if [ -z "$MONGODB_CONNECTION" ]; then
+    echo "MONGODB_CONNECTION environment variable required"
+    exit 1
+fi
+
+echo "NSQLOOKUPD: ${NSQLOOKUPD_ADDRESSES}"
+echo "MONGODB: ${MONGODB_CONNECTION}"
 
 
 # execute nodejs application
