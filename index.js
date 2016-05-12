@@ -49,7 +49,8 @@ bus.on('frame', function (msg) {
       frameIndex: frame.frame_idx,
       uri: frame.uri,
       tags: results[0].labels,
-      text: results[0].text
+      text: results[0].text,
+      faces: results[0].faces
     }, function (err, f) {
       if (err) return handleError(err);
       debug('Video frame recognition results (' + frame.uri + '): ' + JSON.stringify(f));
