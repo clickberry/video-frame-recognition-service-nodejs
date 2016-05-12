@@ -33,7 +33,13 @@ bus.on('frame', function (msg) {
   debug('Video frame ready for recognition: ' + JSON.stringify(frame));
 
   // detecting objects
-  var features = [{name: 'LABEL_DETECTION', maxResults: 10}];
+  var features = [
+    {name: 'LABEL_DETECTION', maxResults: 10},
+    {name: 'LOGO_DETECTION',  maxResults: 10},
+    {name: 'FACE_DETECTION', maxResults: 10},
+    {name: 'TEXT_DETECTION', maxResults: 10}
+  ];
+
   recognizer.detect(frame.uri, {features: features}, function (err, results) {
     if (err) return handleError(err);
 
@@ -42,7 +48,8 @@ bus.on('frame', function (msg) {
       videoId: frame.video_id,
       frameIndex: frame.frame_idx,
       uri: frame.uri,
-      tags: results[0].labels
+      tags: results[0].labels,
+      text: results[0].text
     }, function (err, f) {
       if (err) return handleError(err);
       debug('Video frame recognition results (' + frame.uri + '): ' + JSON.stringify(f));
