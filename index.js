@@ -50,6 +50,7 @@ bus.on('frame', function (msg) {
       uri: frame.uri,
       tags: results[0].labels,
       text: results[0].text,
+      logos: results[0].logos,
       faces: results[0].faces
     }, function (err, f) {
       if (err) return handleError(err);
