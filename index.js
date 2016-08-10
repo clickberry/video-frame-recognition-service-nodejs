@@ -4,7 +4,7 @@ if (!process.env.VISION_API_TOKEN) {
   process.exit(1);
 }
 
-var frame_index = process.env.FRAME_INDEX ? 
+var frameIdx = process.env.FRAME_INDEX ? 
   parseInt(process.env.FRAME_INDEX, 10) : 10;
 
 var debug = require('debug')('clickberry:video-frame-recognition:worker');
@@ -24,7 +24,7 @@ function handleError(err) {
 bus.on('frame', function (msg) {
   var frame = JSON.parse(msg.body);
 
-  if (frame.frame_idx % frame_index !== 0) {
+  if (frame.frameIdx % frameIdx !== 0) {
     debug('Skipping frame: ' + JSON.stringify(frame));
     return msg.finish();
   }
