@@ -5,7 +5,7 @@ if (!process.env.VISION_API_TOKEN) {
 }
 
 var frame_index = process.env.FRAME_INDEX ? 
-  parseInt(process.env.FRAME_INDEX, 10) : 25;
+  parseInt(process.env.FRAME_INDEX, 10) : 10;
 
 var debug = require('debug')('clickberry:video-frame-recognition:worker');
 
@@ -45,8 +45,8 @@ bus.on('frame', function (msg) {
 
     // save recognition results
     Frame.create({
-      videoId: frame.video_id,
-      frameIndex: frame.frame_idx,
+      videoId: frame.videoId,
+      frameIndex: frame.frameIdx,
       uri: frame.uri,
       tags: results[0].labels,
       text: results[0].text,
