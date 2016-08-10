@@ -4,9 +4,6 @@ if (!process.env.VISION_API_TOKEN) {
   process.exit(1);
 }
 
-var frameIdx = process.env.FRAME_INDEX ? 
-  parseInt(process.env.FRAME_INDEX, 10) : 10;
-
 var debug = require('debug')('clickberry:video-frame-recognition:worker');
 
 var Recognizer = require('./lib/recognizer');
@@ -24,11 +21,6 @@ function handleError(err) {
 bus.on('frame', function (msg) {
   var frame = JSON.parse(msg.body);
 
-  if (frame.frameIdx % frameIdx !== 0) {
-    debug('Skipping frame: ' + JSON.stringify(frame));
-    return msg.finish();
-  }
-  
   // we will recognize objects in 1 frame per second
   debug('Video frame ready for recognition: ' + JSON.stringify(frame));
 
@@ -46,6 +38,7 @@ bus.on('frame', function (msg) {
     // save recognition results
     Frame.create({
       videoId: frame.videoId,
+      segmentIndex: frame.segmentIdx,
       frameIndex: frame.frameIdx,
       uri: frame.uri,
       tags: results[0].labels,
