@@ -1,6 +1,6 @@
 {
   "name": "video-frame-recognition-service-nodejs",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Recognizes objects in video frames and stores them in db.",
   "main": "index.js",
   "dependencies": {
