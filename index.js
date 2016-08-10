@@ -38,6 +38,7 @@ bus.on('frame', function (msg) {
     // save recognition results
     Frame.create({
       videoId: frame.videoId,
+      videoUri: frame.videoUri,
       segmentIndex: frame.segmentIdx,
       frameIndex: frame.frameIdx,
       uri: frame.uri,
